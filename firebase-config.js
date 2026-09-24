@@ -9,3 +9,7 @@ window.SUBBU_FIREBASE = {
   messagingSenderId: "815883379371",
   appId: "1:815883379371:web:3d0741f92efa43044f4dee"
 };
+
+// LINE Official Account used for reminders. Set addFriendUrl to https://line.me/R/ti/p/@<basic id>.
+// null hides the LINE option in the app.
+window.SUBBU_LINE = null;

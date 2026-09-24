@@ -267,6 +267,15 @@ a.btn{text-decoration:none}
 .g-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:42px;padding:0 18px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:600;cursor:pointer}
 .g-btn:hover{border-color:var(--ink-3)}
 .g-btn:disabled{opacity:.5;cursor:progress}
+.line-box{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.line-box h3{font-family:var(--f-body);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.line-box h3 .ok{color:var(--accent)}
+.line-step{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.line-step > span{font-weight:600;color:var(--ink)}
+.line-btn{background:#06C755;color:#fff;border-color:#06C755}
+.line-btn:hover{background:#05b34c}
+.line-code{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.line-code .num{font-size:28px;font-weight:600;letter-spacing:.18em;padding:6px 12px;border-radius:8px;background:var(--surface-2)}
 .migrate-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:var(--r);background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
 .migrate-bar b{display:block;font-weight:600}
 .migrate-bar span{font-size:13.5px;color:var(--ink-2)}
@@ -838,6 +847,13 @@ en: {
   migrateYes:"Move to my account", migrateNo:"No thanks", migrated:n => `Moved ${pl(n,"subscription")} to your account`,
   whereSynced:"Everything you add syncs to your account, so it's on all your devices.",
   whereLocalSignIn:"Everything you add is saved in this browser. Sign in to sync across your devices.",
+  lineTitle:"LINE reminders", lineOff:"Get a LINE message at 08:00 on each reminder day, even when SUBBU is closed.",
+  lineStep1:"1. Add SUBBU as a friend on LINE", lineAdd:"Add friend on LINE", lineStep2:"2. Get a code and send it in the SUBBU chat on LINE",
+  lineGetCode:"Get code", lineCodeHelp:t => `Send this code in the LINE chat before ${t}. The chat connects on its own.`,
+  copy:"Copy", copied:"Copied", lineWaiting:"Waiting for your message…",
+  lineOn:"Connected. You'll get a LINE message at 08:00 on each reminder day.", lineUnlink:"Disconnect LINE",
+  lineLinkedToast:"LINE connected", lineUnlinkedToast:"LINE disconnected", lineCodeErr:"Couldn't create a code. Check your connection and try again.",
+  lineRemHint:"Or get reminders on LINE every morning.", lineOpenAcct:"Set up LINE reminders", lineSignInHint:"Sign in to get reminders on LINE.",
   install:"Install app", installIos:"To install SUBBU, tap the Share button in Safari, then “Add to Home Screen”.", installed:"SUBBU is installed. Open it from your home screen.",
   cats:{ent:"Streaming & games", music:"Music & audio", mobile:"Mobile & internet", apps:"Apps & delivery", work:"Work & AI", cloud:"Cloud & security",
     health:"Health & fitness", learn:"News & learning", bills:"Bills & utilities", debt:"Loans & installments"},
@@ -954,6 +970,13 @@ th: {
   migrateYes:"ย้ายขึ้นบัญชี", migrateNo:"ไม่ต้อง", migrated:n => `ย้าย ${n} รายการขึ้นบัญชีแล้ว`,
   whereSynced:"ทุกอย่างที่เพิ่มจะซิงก์กับบัญชีของคุณ เห็นได้ทุกเครื่อง",
   whereLocalSignIn:"ทุกอย่างที่เพิ่มจะบันทึกในเบราว์เซอร์นี้ เข้าสู่ระบบเพื่อซิงก์ทุกเครื่อง",
+  lineTitle:"แจ้งเตือนทาง LINE", lineOff:"รับข้อความ LINE เวลา 08:00 ในวันที่ถึงกำหนดเตือน แม้ไม่ได้เปิด SUBBU",
+  lineStep1:"1. เพิ่ม SUBBU เป็นเพื่อนใน LINE", lineAdd:"เพิ่มเพื่อนใน LINE", lineStep2:"2. สร้างรหัส แล้วส่งในแชต SUBBU บน LINE",
+  lineGetCode:"สร้างรหัส", lineCodeHelp:t => `ส่งรหัสนี้ในแชต LINE ก่อนเวลา ${t} น. ระบบจะเชื่อมต่อให้เอง`,
+  copy:"คัดลอก", copied:"คัดลอกแล้ว", lineWaiting:"กำลังรอข้อความจากคุณ…",
+  lineOn:"เชื่อมต่อแล้ว จะได้รับข้อความ LINE เวลา 08:00 ในวันที่ถึงกำหนดเตือน", lineUnlink:"ยกเลิกการเชื่อมต่อ LINE",
+  lineLinkedToast:"เชื่อมต่อ LINE แล้ว", lineUnlinkedToast:"ยกเลิกการเชื่อมต่อ LINE แล้ว", lineCodeErr:"สร้างรหัสไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
+  lineRemHint:"หรือรับแจ้งเตือนทาง LINE ทุกเช้า", lineOpenAcct:"ตั้งค่าแจ้งเตือนทาง LINE", lineSignInHint:"เข้าสู่ระบบเพื่อรับแจ้งเตือนทาง LINE",
   install:"ติดตั้งแอป", installIos:"ติดตั้ง SUBBU: ใน Safari แตะปุ่มแชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม”", installed:"ติดตั้ง SUBBU แล้ว เปิดได้จากหน้าจอโฮม",
   cats:{ent:"สตรีมมิ่งและเกม", music:"เพลงและเสียง", mobile:"มือถือและอินเทอร์เน็ต", apps:"แอปและเดลิเวอรี", work:"งานและ AI", cloud:"คลาวด์และความปลอดภัย",
     health:"สุขภาพและฟิตเนส", learn:"ข่าวและการเรียนรู้", bills:"บิลและสาธารณูปโภค", debt:"สินเชื่อและผ่อนชำระ"},
@@ -1273,6 +1296,7 @@ function localStore(){
 /* ---------- Firebase sync (installable build only; firebase-config.js sets window.SUBBU_FIREBASE) ---------- */
 const FB_VERSION = "12.19.0";
 const FB_CFG = window.SUBBU_FIREBASE || null;
+const LINE_CFG = window.SUBBU_LINE && window.SUBBU_LINE.addFriendUrl ? window.SUBBU_LINE : null;
 const fb = { api:null, auth:null, db:null, user:null, ready:false };
 async function loadFirebase(){
   const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}/`;
@@ -1454,6 +1478,9 @@ function renderRemDialog(){
         : `<p class="note-s">${t("remNoActive")}</p>`}
       ${canIcs && live.length ? `<div><button type="button" class="btn secondary sm" id="icsBtn">${t("icsBtn")}</button><p class="note-s" style="margin-top:6px">${t("icsHelp")}</p></div>` : ""}
       <p class="note-s">${t("remPhoneNote")}</p>
+      ${LINE_CFG && fb.ready ? (fb.user
+        ? `<p>${t("lineRemHint")}</p><div><button type="button" class="btn sm line-btn" data-acct-open>${t("lineOpenAcct")}</button></div>`
+        : `<p>${t("lineSignInHint")}</p><div><button type="button" class="g-btn" data-signin>${t("signInGoogle")}</button></div>`) : ""}
     </div>`;
   const ib = document.getElementById("icsBtn"); if (ib) ib.onclick = downloadIcs;
 }
@@ -1506,6 +1533,7 @@ function renderAcct(){
     const u = fb.user;
     body.innerHTML = `<div class="a-who"><span class="av" aria-hidden="true">${esc(userInitial(u))}</span><div>${u.displayName ? `<b>${esc(u.displayName)}</b>` : ""}<span>${esc(u.email || "")}</span></div></div>
       <p>${t("acctSync")}</p>
+      ${lineSectionHTML()}
       <div><button type="button" class="btn secondary" data-signout>${t("signOut")}</button></div>
       <p class="note-s">${t("signOutNote")}</p>`;
   } else {
@@ -1549,6 +1577,70 @@ document.addEventListener("click", e => {
     rerenderKeep();
   }
 });
+/* ---------- LINE reminders: link this account to a LINE chat ---------- */
+const lineState = { unsub:null, linked:false, lang:null, code:null, expires:0 };
+function watchLine(user){
+  if (lineState.unsub){ lineState.unsub(); lineState.unsub = null; }
+  Object.assign(lineState, {linked:false, lang:null, code:null, expires:0});
+  if (!user || !LINE_CFG) return;
+  lineState.unsub = fb.api.onSnapshot(fb.api.doc(fb.db, "lineUsers", user.uid), snap => {
+    const was = lineState.linked;
+    lineState.linked = snap.exists(); lineState.lang = lineState.linked ? snap.data().lang : null;
+    if (!was && lineState.linked && lineState.code){ lineState.code = null; toast(t("lineLinkedToast")); }
+    if (lineState.linked && lineState.lang !== lang) syncLineLang();
+    if (acctDlg.open) renderAcct();
+  }, () => {});
+}
+function syncLineLang(){
+  if (!lineState.linked || !fb.user) return;
+  fb.api.updateDoc(fb.api.doc(fb.db, "lineUsers", fb.user.uid), {lang}).catch(() => {});
+}
+function lineSectionHTML(){
+  if (!LINE_CFG) return "";
+  if (lineState.linked) return `<div class="line-box"><h3><span class="ok" aria-hidden="true">✓</span>${t("lineTitle")}</h3><p>${t("lineOn")}</p>
+    <div><button type="button" class="btn secondary sm" data-line-unlink>${t("lineUnlink")}</button></div></div>`;
+  const live = lineState.code && Date.now() < lineState.expires;
+  const until = live ? new Date(lineState.expires).toLocaleTimeString(loc(), {hour:"2-digit", minute:"2-digit"}) : "";
+  return `<div class="line-box"><h3>${t("lineTitle")}</h3><p>${t("lineOff")}</p>
+    <div class="line-step"><span>${t("lineStep1")}</span><div><a class="btn sm line-btn" href="${esc(LINE_CFG.addFriendUrl)}" target="_blank" rel="noopener noreferrer">${t("lineAdd")} <span class="ext" aria-hidden="true">↗</span></a></div></div>
+    <div class="line-step"><span>${t("lineStep2")}</span>
+      ${live ? `<div class="line-code"><span class="num" id="lineCode">${lineState.code}</span><button type="button" class="btn secondary sm" data-line-copy>${t("copy")}</button></div>
+        <p class="note-s">${t("lineCodeHelp", until)}</p><p class="note-s" aria-live="polite">${t("lineWaiting")}</p>`
+      : `<div><button type="button" class="btn secondary sm" data-line-code>${t("lineGetCode")}</button></div>`}
+    </div></div>`;
+}
+async function createLineCode(btn){
+  if (!fb.user) return;
+  if (btn) btn.disabled = true;
+  for (let attempt = 0; attempt < 2; attempt++){
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
+    const expires = Date.now() + 15 * 60000;
+    try {
+      await fb.api.setDoc(fb.api.doc(fb.db, "lineLinks", code), {uid:fb.user.uid, lang, expires});
+      Object.assign(lineState, {code, expires}); renderAcct();
+      const c = document.getElementById("lineCode"); if (c) c.closest(".line-step").querySelector("[data-line-copy]").focus();
+      return;
+    } catch(e){ /* an existing code with the same digits is rejected by the rules; try another */ }
+  }
+  if (btn) btn.disabled = false;
+  toast(t("lineCodeErr"), null, true);
+}
+document.addEventListener("click", async e => {
+  const gc = e.target.closest("[data-line-code]"); if (gc){ createLineCode(gc); return; }
+  const cp = e.target.closest("[data-line-copy]");
+  if (cp){
+    try { await navigator.clipboard.writeText(lineState.code); cp.textContent = t("copied"); }
+    catch(err){ const el = document.getElementById("lineCode"); const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+    return;
+  }
+  if (e.target.closest("[data-line-unlink]")){
+    try { await fb.api.deleteDoc(fb.api.doc(fb.db, "lineUsers", fb.user.uid)); toast(t("lineUnlinkedToast")); }
+    catch(err){ toast(t("errSave"), null, true); }
+    return;
+  }
+  if (e.target.closest("[data-acct-open]")){ if (remDlg.open) remDlg.close(); openAcct(acctBtn); }
+});
+
 // Offer once per account to move subscriptions saved in this browser before signing in.
 function checkMigration(cloudSubs){
   if (!store || store.mode !== "synced" || state.migrate) return;
@@ -1576,7 +1668,7 @@ async function boot(){
   fb.api.onAuthStateChanged(fb.auth, user => {
     const changed = (fb.user && fb.user.uid) !== (user && user.uid);
     fb.user = user;
-    if (changed || !store) useStore(user ? firebaseStore(user) : localStore());
+    if (changed || !store){ useStore(user ? firebaseStore(user) : localStore()); watchLine(user); }
     if (authAction === "in" && user) toast(t("signedIn", userLabel(user)));
     if (authAction === "out" && !user) toast(t("signedOut"));
     authAction = null;
@@ -1655,6 +1747,7 @@ function setLang(l){
   }
   if (remDlg.open) renderRemDialog();
   paintAccount(); if (acctDlg.open) renderAcct();
+  syncLineLang();
 }
 document.getElementById("langSeg").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (b) setLang(b.dataset.lang); });
 

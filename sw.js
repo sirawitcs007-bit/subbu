@@ -1,6 +1,6 @@
 // SUBBU service worker: keeps the app usable offline.
 // VERSION is rewritten by build.js on every build, which retires the old cache.
-const VERSION = "subbu-e84368c206";
+const VERSION = "subbu-ad4d1cf768";
 const SHELL = [
   "./",
   "./index.html",
