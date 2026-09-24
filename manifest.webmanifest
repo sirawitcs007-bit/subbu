@@ -1,0 +1,28 @@
+{
+  "name": "SUBBU",
+  "short_name": "SUBBU",
+  "description": "ติดตามค่าสมาชิก บิล และค่างวด พร้อมเตือนก่อนตัดเงิน / Track subscriptions, bills and loans, with reminders before each charge.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "th",
+  "background_color": "#F4F6F5",
+  "theme_color": "#F4F6F5",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "เพิ่มรายการ",
+      "short_name": "เพิ่ม",
+      "description": "Add a subscription",
+      "url": "./?action=add",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
