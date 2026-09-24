@@ -19,6 +19,7 @@
 body{margin:0}
 img{max-width:100%}
 </style>
+<script src="firebase-config.js"></script>
 <title>SUBBU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,7 +123,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:750;font-size:20px;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
 .brand svg{flex:none}
 .topbar .date{color:var(--ink-3);font-size:13px;white-space:nowrap}
-@media (max-width:720px){.topbar .date{display:none}}
+.topbar .seg{flex-wrap:nowrap;flex:none}
+@media (max-width:980px){.topbar .date{display:none}}
+@media (max-width:820px){.acct .lbl{display:none}}
 @media (max-width:560px){.topbar .wrap{gap:6px}.topbar #installBtn{padding:0 9px}.topbar .seg button{padding:4px 7px}}
 @media (max-width:400px){.topbar .save{display:none}.brand{font-size:18px}}
 .topbar .spacer{flex:1}
@@ -247,6 +250,27 @@ main{padding-block:28px 72px;display:flex;flex-direction:column;gap:28px}
 a.btn{text-decoration:none}
 .btn .ext{opacity:.7}
 @media (max-width:560px){.rem-item{grid-template-columns:32px minmax(0,1fr)}.rem-item .acts{grid-column:2;justify-content:flex-start}.up-row{grid-template-columns:70px 28px minmax(0,1fr)}.up-row .ch{grid-column:3}}
+
+/* account + sync */
+.acct{gap:7px;padding-inline:10px}
+.acct .av{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.acct svg{flex:none}
+@media (max-width:640px){.acct .lbl{display:none}}
+.acct-modal{width:min(440px,calc(100% - 32px))}
+.acct-modal .a-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.a-who{display:flex;align-items:center;gap:12px}
+.a-who .av{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:18px;font-weight:600;flex:none}
+.a-who b{display:block;font-weight:600}
+.a-who span{color:var(--ink-3);font-size:13px;word-break:break-all}
+.a-body p{font-size:13.5px;color:var(--ink-2)}
+.a-body .note-s{font-size:12.5px;color:var(--ink-3)}
+.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:42px;padding:0 18px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:600;cursor:pointer}
+.g-btn:hover{border-color:var(--ink-3)}
+.g-btn:disabled{opacity:.5;cursor:progress}
+.migrate-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:var(--r);background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
+.migrate-bar b{display:block;font-weight:600}
+.migrate-bar span{font-size:13.5px;color:var(--ink-2)}
+.migrate-bar .acts{display:flex;gap:8px}
 
 /* calendar */
 .up-title{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap}
@@ -527,6 +551,7 @@ dialog::backdrop{background:var(--backdrop)}
       <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15l1.5-2ZM10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="badge num" id="bellBadge" hidden></span>
     </button>
+    <button type="button" class="btn ghost sm acct" id="acctBtn" hidden></button>
     <div class="seg" role="group" id="langSeg" data-t-aria="language">
       <button type="button" data-lang="th" lang="th" aria-pressed="false">TH</button>
       <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
@@ -681,6 +706,16 @@ dialog::backdrop{background:var(--backdrop)}
   <div class="r-body" id="r-body"></div>
 </dialog>
 
+<dialog id="acctDialog" class="modal acct-modal" aria-labelledby="a-title">
+  <div class="m-head">
+    <h2 id="a-title" data-t="acctTitle">Your account</h2>
+    <button type="button" class="icon-btn" data-aclose data-t-aria="close" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4 4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="a-body" id="a-body"></div>
+</dialog>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
@@ -791,6 +826,18 @@ en: {
   gcalDetails:(plan,m) => `${plan ? plan + "\n" : ""}Paid with ${m}\nReminder from SUBBU`,
   remDrawer:"Reminder on your phone", remDrawerHelp:"Opens Google Calendar with a repeating reminder. You press Save there.",
   icsName:"subbu-reminders", icsCal:"SUBBU reminders",
+  signIn:"Sign in", account:"Account", acctTitle:"Your account",
+  acctSync:"Your subscriptions sync to every device where you sign in with this account, and still work offline.",
+  signOut:"Sign out", signOutNote:"After you sign out, this device shows only what's saved in this browser.",
+  signInTitle:"Sync across your devices", signInBody:"Sign in with Google to keep your subscriptions on both your phone and your computer. Without signing in, they stay in this browser only.",
+  signInGoogle:"Continue with Google", signedIn:e => `Signed in as ${e}`, signedOut:"Signed out. Showing what's saved in this browser.",
+  signInFailed:"Couldn't sign in. Check your connection and try again.",
+  signInDomain:"Sign-in isn't set up for this website yet. In Firebase, add this domain under Authentication → Settings → Authorized domains.",
+  savedSynced:'Synced<span class="long"> to your account</span>', syncOffline:'Offline<span class="long"> · will sync when online</span>',
+  migrateTitle:n => `${pl(n,"subscription")} saved in this browser`, migrateBody:"Move them to your account so they show up on your other devices too.",
+  migrateYes:"Move to my account", migrateNo:"No thanks", migrated:n => `Moved ${pl(n,"subscription")} to your account`,
+  whereSynced:"Everything you add syncs to your account, so it's on all your devices.",
+  whereLocalSignIn:"Everything you add is saved in this browser. Sign in to sync across your devices.",
   install:"Install app", installIos:"To install SUBBU, tap the Share button in Safari, then “Add to Home Screen”.", installed:"SUBBU is installed. Open it from your home screen.",
   cats:{ent:"Streaming & games", music:"Music & audio", mobile:"Mobile & internet", apps:"Apps & delivery", work:"Work & AI", cloud:"Cloud & security",
     health:"Health & fitness", learn:"News & learning", bills:"Bills & utilities", debt:"Loans & installments"},
@@ -895,6 +942,18 @@ th: {
   gcalDetails:(plan,m) => `${plan ? plan + "\n" : ""}ชำระด้วย ${m}\nการแจ้งเตือนจาก SUBBU`,
   remDrawer:"แจ้งเตือนบนมือถือ", remDrawerHelp:"เปิด Google Calendar พร้อมการแจ้งเตือนแบบซ้ำ แล้วกดบันทึกที่นั่น",
   icsName:"subbu-reminders", icsCal:"การแจ้งเตือน SUBBU",
+  signIn:"เข้าสู่ระบบ", account:"บัญชี", acctTitle:"บัญชีของคุณ",
+  acctSync:"รายการของคุณซิงก์กับทุกเครื่องที่เข้าสู่ระบบด้วยบัญชีนี้ และยังใช้แบบออฟไลน์ได้",
+  signOut:"ออกจากระบบ", signOutNote:"หลังออกจากระบบ เครื่องนี้จะแสดงเฉพาะข้อมูลที่บันทึกไว้ในเบราว์เซอร์นี้",
+  signInTitle:"ซิงก์ข้อมูลทุกเครื่อง", signInBody:"เข้าสู่ระบบด้วย Google เพื่อให้รายการของคุณอยู่ทั้งในมือถือและคอมพิวเตอร์ ถ้าไม่เข้าสู่ระบบ ข้อมูลจะอยู่ในเบราว์เซอร์นี้เท่านั้น",
+  signInGoogle:"ดำเนินการต่อด้วย Google", signedIn:e => `เข้าสู่ระบบเป็น ${e} แล้ว`, signedOut:"ออกจากระบบแล้ว กำลังแสดงข้อมูลที่บันทึกในเบราว์เซอร์นี้",
+  signInFailed:"เข้าสู่ระบบไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
+  signInDomain:"ยังไม่ได้ตั้งค่าให้เว็บนี้เข้าสู่ระบบได้ ให้เพิ่มโดเมนนี้ใน Firebase ที่ Authentication → Settings → Authorized domains",
+  savedSynced:'ซิงก์แล้ว<span class="long">กับบัญชีของคุณ</span>', syncOffline:'ออฟไลน์<span class="long"> · จะซิงก์เมื่อออนไลน์</span>',
+  migrateTitle:n => `มี ${n} รายการที่บันทึกไว้ในเบราว์เซอร์นี้`, migrateBody:"ย้ายขึ้นบัญชีเพื่อให้เห็นในเครื่องอื่นด้วย",
+  migrateYes:"ย้ายขึ้นบัญชี", migrateNo:"ไม่ต้อง", migrated:n => `ย้าย ${n} รายการขึ้นบัญชีแล้ว`,
+  whereSynced:"ทุกอย่างที่เพิ่มจะซิงก์กับบัญชีของคุณ เห็นได้ทุกเครื่อง",
+  whereLocalSignIn:"ทุกอย่างที่เพิ่มจะบันทึกในเบราว์เซอร์นี้ เข้าสู่ระบบเพื่อซิงก์ทุกเครื่อง",
   install:"ติดตั้งแอป", installIos:"ติดตั้ง SUBBU: ใน Safari แตะปุ่มแชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม”", installed:"ติดตั้ง SUBBU แล้ว เปิดได้จากหน้าจอโฮม",
   cats:{ent:"สตรีมมิ่งและเกม", music:"เพลงและเสียง", mobile:"มือถือและอินเทอร์เน็ต", apps:"แอปและเดลิเวอรี", work:"งานและ AI", cloud:"คลาวด์และความปลอดภัย",
     health:"สุขภาพและฟิตเนส", learn:"ข่าวและการเรียนรู้", bills:"บิลและสาธารณูปโภค", debt:"สินเชื่อและผ่อนชำระ"},
@@ -1204,12 +1263,57 @@ function localStore(){
   const emit = () => { subsCb(Object.entries(mem.subs).map(([id,d]) => fromDoc(id,d)).filter(Boolean)); };
   return {
     get mode(){ return mode; },
+    close(){ subsCb = () => {}; setCb = () => {}; },
     subscribe(onSubs, onSettings){ subsCb = onSubs; setCb = onSettings; setTimeout(() => { setCb(mem.settings||{}); emit(); }, 0); },
     saveSub: s => { mem.subs[s.id] = toDoc(s); flush(); return Promise.resolve(); },
     deleteSub: id => { delete mem.subs[id]; flush(); return Promise.resolve(); },
     saveSettings: o => { mem.settings = {display:o.display, rate:o.rate}; flush(); return Promise.resolve(); }
   };
 }
+/* ---------- Firebase sync (installable build only; firebase-config.js sets window.SUBBU_FIREBASE) ---------- */
+const FB_VERSION = "12.19.0";
+const FB_CFG = window.SUBBU_FIREBASE || null;
+const fb = { api:null, auth:null, db:null, user:null, ready:false };
+async function loadFirebase(){
+  const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}/`;
+  const [appM, authM, fsM] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")]);
+  const app = appM.initializeApp(FB_CFG);
+  fb.api = Object.assign({}, authM, fsM);
+  fb.auth = authM.getAuth(app);
+  // Keeps a copy in IndexedDB so the app opens and edits offline, then syncs.
+  fb.db = fsM.initializeFirestore(app, {localCache: fsM.persistentLocalCache({tabManager: fsM.persistentMultipleTabManager()})});
+  fb.ready = true;
+}
+function firebaseStore(user){
+  const {api, db} = fb, base = `users/${user.uid}`;
+  const queue = makeQueue(); let unsubs = [];
+  // Offline writes land in the local cache right away but only resolve once the server has them,
+  // so don't hold the "Saving…" state open while offline; report a later failure instead.
+  const write = p => {
+    if (navigator.onLine) return p;
+    p.catch(() => { paintSave(true); toast(t("errSave"), null, true); });
+    return Promise.resolve();
+  };
+  return {
+    mode:"synced", uid:user.uid,
+    subscribe(onSubs, onSettings, onError){
+      unsubs.forEach(u => u());
+      unsubs = [
+        api.onSnapshot(api.collection(db, base, "subs"), snap => onSubs(snap.docs.map(d => fromDoc(d.id, d.data())).filter(Boolean)), onError),
+        api.onSnapshot(api.doc(db, base, "settings", "app"), snap => onSettings(snap.exists() ? snap.data() : {}), () => {})
+      ];
+    },
+    close(){ unsubs.forEach(u => u()); unsubs = []; },
+    saveSub: s => queue("subs/"+s.id, () => write(api.setDoc(api.doc(db, base, "subs", s.id), toDoc(s)))),
+    deleteSub: id => queue("subs/"+id, () => write(api.deleteDoc(api.doc(db, base, "subs", id)))),
+    saveSettings: o => queue("settings", () => write(api.setDoc(api.doc(db, base, "settings", "app"), {display:o.display, rate:o.rate}))),
+    importMany: rows => { const b = api.writeBatch(db); rows.forEach(([id, d]) => b.set(api.doc(db, base, "subs", id), d)); return write(b.commit()); }
+  };
+}
+const readLocalSubs = () => { try { const m = JSON.parse(localStorage.getItem("recur.v1") || "{}"); return m.subs || {}; } catch(e){ return {}; } };
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e){} };
+
 async function openStore(){
   if (window.claude && typeof window.claude.use === "function"){
     try { const db = await window.claude.use("db"); if (db) return dbStore(db); } catch(e){}
@@ -1379,6 +1483,106 @@ installBtn.onclick = async () => {
 };
 // Home-screen shortcut "Add subscription" opens the app with ?action=add.
 let pendingAction = (() => { try { return new URLSearchParams(location.search).get("action"); } catch(e){ return null; } })();
+
+/* ---------- account ---------- */
+const acctBtn = document.getElementById("acctBtn"), acctDlg = document.getElementById("acctDialog");
+let authAction = null;   // "in" | "out" while the viewer is signing in or out, for the confirmation toast
+const userLabel = u => u.email || u.displayName || "Google";
+const userInitial = u => (u.displayName || u.email || "?").trim().charAt(0).toUpperCase();
+function paintAccount(){
+  if (!fb.ready){ acctBtn.hidden = true; return; }
+  acctBtn.hidden = false;
+  if (fb.user){
+    acctBtn.innerHTML = `<span class="av" aria-hidden="true">${esc(userInitial(fb.user))}</span>`;
+    acctBtn.setAttribute("aria-label", `${t("account")}: ${userLabel(fb.user)}`);
+  } else {
+    acctBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 19.5c1.2-3.2 3.8-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="lbl">${t("signIn")}</span>`;
+    acctBtn.setAttribute("aria-label", t("signIn"));
+  }
+}
+function renderAcct(){
+  const body = document.getElementById("a-body");
+  if (fb.user){
+    const u = fb.user;
+    body.innerHTML = `<div class="a-who"><span class="av" aria-hidden="true">${esc(userInitial(u))}</span><div>${u.displayName ? `<b>${esc(u.displayName)}</b>` : ""}<span>${esc(u.email || "")}</span></div></div>
+      <p>${t("acctSync")}</p>
+      <div><button type="button" class="btn secondary" data-signout>${t("signOut")}</button></div>
+      <p class="note-s">${t("signOutNote")}</p>`;
+  } else {
+    body.innerHTML = `<p><b>${t("signInTitle")}</b></p><p>${t("signInBody")}</p><div><button type="button" class="g-btn" data-signin>${t("signInGoogle")}</button></div>`;
+  }
+}
+function openAcct(trigger){ lastFocus = trigger || document.activeElement; renderAcct(); if (!acctDlg.open) acctDlg.showModal(); }
+acctDlg.addEventListener("click", e => { if (e.target === acctDlg || e.target.closest("[data-aclose]")) acctDlg.close(); });
+acctDlg.addEventListener("close", restoreFocus);
+acctBtn.onclick = e => openAcct(e.currentTarget);
+
+function authError(e){
+  const code = e && e.code || "";
+  if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return;
+  toast(code === "auth/unauthorized-domain" ? t("signInDomain") : t("signInFailed"), null, true);
+}
+async function signIn(btn){
+  if (!fb.ready) return;
+  const provider = new fb.api.GoogleAuthProvider();
+  provider.setCustomParameters({prompt:"select_account"});
+  authAction = "in"; if (btn) btn.disabled = true;
+  try { await fb.api.signInWithPopup(fb.auth, provider); }
+  catch(e){
+    // Some installed-app and in-app browsers can't open popups; fall back to a full-page redirect.
+    if (["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code)){ try { await fb.api.signInWithRedirect(fb.auth, provider); return; } catch(e2){ e = e2; } }
+    authAction = null; authError(e);
+  } finally { if (btn) btn.disabled = false; }
+}
+async function signOutNow(){
+  authAction = "out";
+  try { await fb.api.signOut(fb.auth); } catch(e){ authAction = null; toast(t("signInFailed"), null, true); }
+}
+document.addEventListener("click", e => {
+  const si = e.target.closest("[data-signin]"); if (si){ signIn(si); return; }
+  if (e.target.closest("[data-signout]")){ acctDlg.close(); signOutNow(); return; }
+  const mg = e.target.closest("[data-migrate]");
+  if (mg){
+    const rows = state.migrate || []; state.migrate = null;
+    if (store && store.uid) lsSet("subbu.migrated." + store.uid, "1");
+    if (mg.dataset.migrate === "yes" && rows.length && store.importMany){ persist(store.importMany(rows)); toast(t("migrated", rows.length)); }
+    rerenderKeep();
+  }
+});
+// Offer once per account to move subscriptions saved in this browser before signing in.
+function checkMigration(cloudSubs){
+  if (!store || store.mode !== "synced" || state.migrate) return;
+  const flag = "subbu.migrated." + store.uid; if (lsGet(flag)) return;
+  const have = new Set(cloudSubs.map(s => s.id));
+  const rows = Object.entries(readLocalSubs()).filter(([id, d]) => !have.has(id) && fromDoc(id, d));
+  if (!rows.length){ lsSet(flag, "1"); return; }
+  state.migrate = rows; rerenderKeep();
+}
+window.addEventListener("online", () => paintSave());
+window.addEventListener("offline", () => paintSave());
+
+function useStore(s){
+  if (store && store.close) store.close();
+  store = s; lastSaveErr = false; state.migrate = null;
+  if (!state.preview){ state.subs = []; state.view = "loading"; }
+  render(); paintAccount();
+  connect();
+}
+async function boot(){
+  if (window.claude && typeof window.claude.use === "function"){ store = await openStore(); connect(); return; }
+  if (FB_CFG){ try { await loadFirebase(); } catch(e){ fb.ready = false; } }
+  if (!fb.ready){ useStore(localStore()); return; }
+  fb.api.getRedirectResult(fb.auth).catch(authError);
+  fb.api.onAuthStateChanged(fb.auth, user => {
+    const changed = (fb.user && fb.user.uid) !== (user && user.uid);
+    fb.user = user;
+    if (changed || !store) useStore(user ? firebaseStore(user) : localStore());
+    if (authAction === "in" && user) toast(t("signedIn", userLabel(user)));
+    if (authAction === "out" && !user) toast(t("signedOut"));
+    authAction = null;
+    if (acctDlg.open) renderAcct();
+  });
+}
 const subLine = s => {
   const bits = [];
   if (s.plan) bits.push(esc(s.plan));
@@ -1394,6 +1598,11 @@ function paintSave(err){
   if (!store){ saveEl.dataset.s = "idle"; saveEl.textContent = ""; return; }
   if (lastSaveErr){ saveEl.dataset.s = "error"; saveEl.innerHTML = t("saveError"); return; }
   if (pending > 0){ saveEl.dataset.s = "saving"; saveEl.textContent = t("saving"); return; }
+  if (store.mode === "synced"){
+    if (navigator.onLine){ saveEl.dataset.s = "ok"; saveEl.innerHTML = t("savedSynced"); }
+    else { saveEl.dataset.s = "local"; saveEl.innerHTML = t("syncOffline"); }
+    return;
+  }
   if (store.mode === "cloud"){ saveEl.dataset.s = "ok"; saveEl.innerHTML = t("savedCloud"); }
   else if (store.mode === "local"){ saveEl.dataset.s = "local"; saveEl.innerHTML = t("savedLocal"); }
   else { saveEl.dataset.s = "error"; saveEl.innerHTML = t("notSaved"); }
@@ -1445,6 +1654,7 @@ function setLang(l){
     if (!pickEl.hidden) renderPick(); else { paintSvc(); paintPlans(); updateSummary(); }
   }
   if (remDlg.open) renderRemDialog();
+  paintAccount(); if (acctDlg.open) renderAcct();
 }
 document.getElementById("langSeg").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (b) setLang(b.dataset.lang); });
 
@@ -1458,8 +1668,10 @@ function render(){
   if (state.view === "loading") return renderLoading();
   if (state.view === "error") return renderError();
   const banner = state.preview ? `<div class="preview-bar" role="region"><span>${t("previewBanner")}</span><button type="button" class="btn secondary sm" id="exitPreview">${t("exitPreview")}</button></div>` : "";
-  if (!state.subs.length){ view.innerHTML = emptyHTML(); return; }
-  view.innerHTML = banner + remStripHTML() + overviewHTML() + upcomingHTML() + ledgerHTML();
+  const migrate = state.migrate && !state.preview ? `<div class="migrate-bar" role="region" aria-labelledby="mg-h"><div><b id="mg-h">${t("migrateTitle", state.migrate.length)}</b><span>${t("migrateBody")}</span></div>
+    <div class="acts"><button type="button" class="btn primary sm" data-migrate="yes">${t("migrateYes")}</button><button type="button" class="btn ghost sm" data-migrate="no">${t("migrateNo")}</button></div></div>` : "";
+  if (!state.subs.length){ view.innerHTML = migrate + emptyHTML(); return; }
+  view.innerHTML = banner + migrate + remStripHTML() + overviewHTML() + upcomingHTML() + ledgerHTML();
   bindOverview(); bindLedger();
 }
 
@@ -1752,7 +1964,8 @@ function bindLedger(){
 }
 
 function emptyHTML(){
-  const where = !store ? "" : store.mode === "cloud" ? t("whereCloud") : store.mode === "local" ? t("whereLocal") : t("whereMem");
+  const where = !store ? "" : store.mode === "cloud" ? t("whereCloud") : store.mode === "synced" ? t("whereSynced")
+    : store.mode === "local" ? (fb.ready ? t("whereLocalSignIn") : t("whereLocal")) : t("whereMem");
   return `<section class="panel"><div class="state">
     <div class="glyph"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="4" y="6" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 11h18M9 3.5v4M17 3.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
     <h2>${t("emptyTitle")}</h2>
@@ -1760,6 +1973,7 @@ function emptyHTML(){
     <div class="actions"><button type="button" class="btn primary" data-add>${t("addFirst")}</button><button type="button" class="btn secondary" id="previewBtn">${t("previewSample")}</button></div>
     <div class="presets" aria-label="${esc(t("popular"))}">${PRESETS.map(k => { const e = BRAND[k]; return `<button type="button" class="chip" data-preset="${k}">${logo(k, brandName(e), e.cat)}${esc(brandName(e))}</button>`; }).join("")}</div>
     <p class="hint">${where}</p>
+    ${fb.ready && !fb.user ? `<button type="button" class="g-btn" data-signin>${t("signInGoogle")}</button>` : ""}
   </div></section>`;
 }
 function renderLoading(){
@@ -2181,6 +2395,7 @@ function connect(){
     subs => {
       gotSubs = true; if (state.preview) { state.saved = subs; return; }
       state.subs = subs; state.view = "data"; rerenderKeep();
+      checkMigration(subs);
       if (pendingAction === "add"){ pendingAction = null; try { history.replaceState(null, "", location.pathname); } catch(e){} openForm(null, document.getElementById("addBtn")); }
     },
     s => {
@@ -2193,7 +2408,7 @@ function connect(){
 }
 applyStatic();
 render();
-openStore().then(s => { store = s; connect(); });
+boot();
 })();
 </script>
 

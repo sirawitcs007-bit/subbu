@@ -33,6 +33,7 @@ const head = `<!doctype html>
 body{margin:0}
 img{max-width:100%}
 </style>
+<script src="firebase-config.js"></script>
 `;
 
 const register = `
